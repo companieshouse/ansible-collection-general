@@ -1,0 +1,33 @@
+---
+
+- name: Assert storage mode variable contains a valid option
+  assert:
+    that:
+      - systemd_journald_storage_mode is regex('^(volatile|persistent|auto|none)$')
+    fail_msg: systemd_journald_storage_mode must be one of "volatile", "persistent", "auto", or "none"
+
+- name: Check state of systemd-journald log directory
+  stat:
+    path: "{{ systemd_journald_log_directory }}"
+  register: journal_log_directory
+
+- name: Create systemd-journald log directory
+  file:
+    path: "{{ systemd_journald_log_directory }}"
+    mode: '0755'
+    owner: root
+    group: root
+    state: directory
+  when: not journal_log_directory.stat.exists
+
+- name: Apply ACL to systemd-journald log directory
+  command: "systemd-tmpfiles --create --prefix {{ systemd_journald_log_directory }}"
+  when: not journal_log_directory.stat.exists
+
+- name: Set systemd-journald storage mode
+  lineinfile:
+    path: /etc/systemd/journald.conf
+    regexp: '^#Storage='
+    line: "Storage={{ systemd_journald_storage_mode }}"
+  notify:
+    - Restart systemd-journald service

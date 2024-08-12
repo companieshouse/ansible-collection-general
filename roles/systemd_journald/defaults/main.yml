@@ -1,0 +1,4 @@
+---
+
+systemd_journald_log_directory: /var/log/journal
+systemd_journald_storage_mode: persistent

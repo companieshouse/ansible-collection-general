@@ -37,7 +37,7 @@ collections:
 ```yml
 ---
 
-- name: Provision systemd-journal configuration
+- name: Provision systemd-journald configuration
   hosts: all
   roles:
     - role: companieshouse.general.systemd_journald

@@ -25,17 +25,22 @@ All configuration is managed through group/host variables. The following variabl
 ## Example Requirements File
 
 ```yml
-- src: https://github.com/companieshouse/ansible-role-systemd-journald
-  name: systemd-journald
-  version: "n.n.n"
+---
+
+collections:
+  - name: companieshouse.general
+    version: "1.0.0"
 ```
 
 ## Example Playbook
 
 ```yml
-    - hosts: servers
-      roles:
-        - systemd-journald
+---
+
+- name: Provision systemd-journal configuration
+  hosts: all
+  roles:
+    - role: companieshouse.general.systemd_journald
 ```
 
 ## License

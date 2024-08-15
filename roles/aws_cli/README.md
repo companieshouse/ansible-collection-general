@@ -33,17 +33,21 @@ Using the above value, the temporary directory will be created inside `/home/{{ 
 ## Example Requirements File
 
 ```yml
-- src: https://github.com/companieshouse/ansible-role-aws-cli
-  name: aws-cli
-  version: "n.n.n"
+---
+
+collections:
+  - name: companieshouse.general
+    version: "1.0.0"
 ```
 
 ## Example Playbook
 
 ```yml
-- hosts: servers
+
+- name: Provision AWS CLI tool
+  hosts: all
   roles:
-    - aws-cli
+    - role: companieshouse.general.aws_cli
 ```
 
 ## License

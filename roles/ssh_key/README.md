@@ -56,13 +56,10 @@ ssh_key_action: remove
 ```yaml
 ---
 
-roles:
-  - src: https://github.com/companieshouse/ansible-role-ssh-key
-    name: ssh-key
-    version: "n.n.n"
-
 collections:
   - name: community.hashi_vault
+  - name: companieshouse.general
+    version: "1.0.0"
 ```
 
 ## Example Playbook
@@ -72,9 +69,10 @@ Specify `localhost` in your playbook to target the Ansible _controller_:
 ```yaml
 ---
 
-- hosts: localhost
+- name: Provision Ansible controller SSH key for remote hosts
+  hosts: localhost
   roles:
-    - ssh-key
+    - role: companieshouse.general.ssh_key
   vars:
     hashicorp_vault_private_key_path: /applications/my-application-config
     ssh_key_name: my-app-key

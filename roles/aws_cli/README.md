@@ -16,11 +16,14 @@ To specify a different location for the installer package, override the `aws_cli
 aws_cli_url: https://...
 ```
 
-If AWS CLI is already installed at the default location of `/usr/local/bin/aws` this role will make no changes. To always update to the latest available version of AWS CLI, override the `aws_cli_update` role variable default:
+If AWS CLI is already in its default location of `/usr/local/bin/aws` this role will make no changes. To always update to the latest available version of AWS CLI, override the `aws_cli_update` role variable default:
 
 ```yaml
 aws_cli_update: true
 ```
+
+> [!TIP]
+> The default install path for AWS CLI (`/usr/local/bin/aws`) can be changed by setting the `aws_cli_path` variable.
 
 This role creates a temporary directory under `/tmp` where the AWS CLI installer and associated files are extracted before the AWS CLI `install` script is executed. The temporary directory is removed after the script completes. If the `/tmp` directory on the target host(s) resides on a filesystem that is mounted with the `noexec` option, installation will fail with a 'Permission denied' error as the `install` script cannot be executed in this scenario. Specify an alternative path in this case, using the `aws_cli_temp_dir` role variable, to a directory without execution restrictions:
 
@@ -52,4 +55,4 @@ collections:
 
 ## License
 
-MIT
+This project is subject to the terms of the [MIT License](LICENSE).

@@ -1,7 +1,7 @@
 ---
 
 - name: Restart systemd-journald service
-  systemd:
+  ansible.builtin.systemd:
     name: systemd-journald
     state: restarted
     enabled: true

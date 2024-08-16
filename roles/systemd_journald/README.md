@@ -1,6 +1,6 @@
 # Ansible Role: systemd-journald 
 
-An [Ansible Galaxy](https://galaxy.ansible.com/) role for configuring systemd-journald.
+An [Ansible Galaxy](https://galaxy.ansible.com/) role for configuring `systemd-journald` service storage mode.
 
 ## Table of contents
 
@@ -16,7 +16,7 @@ An [Ansible Galaxy](https://galaxy.ansible.com/) role for configuring systemd-jo
 
 ## Configuration
 
-All configuration is managed through group/host variables. The following variables should be defined to override defaults where necessary:
+All configuration is managed through group/host variables. The following variables can be defined to override the default values when necessary:
 
 | Name           | Default             | Description                                                                           |
 |----------------|---------------------|---------------------------------------------------------------------------------------|
@@ -37,7 +37,7 @@ collections:
 ```yml
 ---
 
-- name: Provision systemd-journald configuration
+- name: Provision systemd-journald configuration storage mode
   hosts: all
   roles:
     - role: companieshouse.general.systemd_journald
@@ -45,4 +45,4 @@ collections:
 
 ## License
 
-This project is subject to the terms of the [MIT License](/LICENSE).
+This project is subject to the terms of the [MIT License](LICENSE).

@@ -1,0 +1,45 @@
+---
+
+- name: Check mutually exclusive role variables
+  ansible.builtin.fail:
+    msg: >-
+      The variables 'nfs_mounts_config' and 'nfs_mounts_vault_path' are mututally exclusive;
+      specify either 'nfs_mounts_config' or 'nfs_mounts_vault_path' but not both
+  when: nfs_mounts_config | default('') | trim | length > 1 and nfs_mounts_vault_path | default('') | trim | length > 1
+
+- name: Check presence of mandatory role variable
+  ansible.builtin.fail:
+    msg: >-
+      One of the role variables 'nfs_mounts_config' or 'nfs_mounts_vault_path' must be provided
+      for this role to function
+  when: nfs_mounts_config | default('') | trim | length == 0 and nfs_mounts_vault_path | default('') | trim | length == 0
+
+- name: Retrieve NFS mounts configuration from Hashicorp Vault
+  ansible.builtin.set_fact:
+    nfs_mounts_config: "{{ lookup('community.hashi_vault.hashi_vault', nfs_mounts_vault_path, return_format='values') }}"
+  when: nfs_mounts_vault_path is defined
+
+- name: Install NFS tools # noqa fqcn[action-core]
+  ansible.builtin.yum:
+    state: present
+    name:
+      - nfs-utils
+
+- name: Mount NFS shares
+  ansible.posix.mount:
+    fstype: "{{ item.fstype | default('nfs') }}"
+    opts: "{{ item.opts | default('hard,bg,nfsvers=4') }}"
+    src: "{{ item.src }}"
+    path: "{{ item.path }}"
+    state: mounted
+  loop: "{{ nfs_mounts_config }}"
+
+- name: Create mount point symlinks
+  ansible.builtin.file:
+    src: "{{ item.path }}"
+    dest: "{{ item.symlink }}"
+    owner: root
+    group: root
+    state: link
+  loop: "{{ nfs_mounts_config }}"
+  when: item.symlink is defined and item.symlink | trim | length > 0

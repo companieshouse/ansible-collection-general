@@ -25,7 +25,7 @@ NFS filesystem mounts are configured in one of two ways using the variables `nfs
 ### Role variable configuration
 
 > [!NOTE]
-> The optional `nfs_mounts_config` variable described here is mutually exlusive with the `nfs_mounts_vault_path` variable.
+> The `nfs_mounts_config` variable described here is mutually exclusive with the `nfs_mounts_vault_path` variable.
 
 Use the optional `nfs_mounts_config` variable to configure the NFS filesystems for this role via a group/host variable. If set, the `nfs_mounts_config` variable should be defined as a list of dictionaries and each dictionary supports the following parameters:
 
@@ -39,7 +39,7 @@ Use the optional `nfs_mounts_config` variable to configure the NFS filesystems f
 ### Hashicorp Vault configuration
 
 > [!NOTE]
-> The `nfs_mounts_vault_path` variable described here is mutually exlusive with the `nfs_mounts_config` variable.
+> The `nfs_mounts_vault_path` variable described here is mutually exclusive with the `nfs_mounts_config` variable.
 
 Use the optional `nfs_mounts_vault_path` variable to configure the NFS filesystems for this role via a Hashicorp Vault secret. If set, the `nfs_mounts_vault_path` variable should contain the path to a Hashicorp Vault secret containing a JSON object of the following format:
 

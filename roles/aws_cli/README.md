@@ -46,6 +46,7 @@ collections:
 ## Example Playbook
 
 ```yml
+---
 
 - name: Provision AWS CLI tool
   hosts: all

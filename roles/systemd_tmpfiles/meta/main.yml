@@ -1,0 +1,10 @@
+galaxy_info:
+  role_name: systemd_tmpfiles
+  author: Companies House
+  description: Provision systemd-tmpfiles age and type configuration for /tmp directory
+  license: MIT
+  min_ansible_version: 2.9.10
+  galaxy_tags:
+    - systemd
+    - tmpfiles
+  standalone: false

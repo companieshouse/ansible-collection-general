@@ -1,0 +1,25 @@
+---
+
+- name: Assert age is correctly formatted
+  ansible.builtin.assert:
+    that: systemd_tmpfiles_age is regex("^\d+(s|m|min|h|d|w|ms|us|seconds|minutes|hours|days|weeks|milliseconds|microseconds)$")
+    fail_msg: >
+      The age value should be an integer followed by one of the suffixes for the respective time units: s, m or min,
+      h, d, w, ms, and us, or one of the full unit names: seconds, minutes, hours, days, weeks, milliseconds, and
+      microseconds. See tmpfiles.d(5) for more information.
+
+- name: Assert type is correctly formatted
+  ansible.builtin.assert:
+    that: systemd_tmpfiles_type is regex("^[fwdDevqQpLcbCxXrRzZtThHaA][+!-=~^]*$")
+    fail_msg: >
+      The type value should be a single letter and optionally one or more modifier characters: a plus sign ("+"),
+      exclamation mark ("!"), minus sign ("-"), equals sign ("="), tilde character ("~") and/or caret ("^"). See
+      tmpfiles.d(5) for more information.
+
+- name: Create configuration file
+  ansible.builtin.template:
+    src: tmp.conf.j2
+    dest: "/etc/tmpfiles.d/{{ systemd_tmpfiles_filename }}"
+    owner: root
+    group: root
+    mode: '0644'

@@ -1,0 +1,5 @@
+---
+
+systemd_tmpfiles_age: 1d
+systemd_tmpfiles_filename: tmp.conf
+systemd_tmpfiles_type: v

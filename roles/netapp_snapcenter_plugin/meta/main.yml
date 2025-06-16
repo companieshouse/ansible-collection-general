@@ -1,0 +1,10 @@
+galaxy_info:
+  role_name: netapp_snapcenter_plugin
+  author: Companies House
+  description: Install Netapp Snapcenter Plugin
+  company: Companies House
+  license: MIT
+  min_ansible_version: 2.9.10
+  galaxy_tags:
+    - netapp_snapcenter
+  standalone: false

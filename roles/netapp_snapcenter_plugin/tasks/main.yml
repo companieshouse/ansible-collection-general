@@ -1,0 +1,9 @@
+---
+- name: Check if Netapp Snapcenter plugin is installed
+  ansible.builtin.stat:
+    path: "{{ snapcenter_path }}"
+  register: snapcenter_plugin
+
+- name: Install Netapp Snapcenter
+  ansible.builtin.include_tasks: snapcenter.yml
+  when: not snapcenter.stat.exists

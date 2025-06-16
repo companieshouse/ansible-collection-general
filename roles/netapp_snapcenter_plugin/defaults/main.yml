@@ -1,0 +1,3 @@
+---
+snapcenter_path: /opt/NetApp/snapcenter/spl/bin/spl
+snapcenter_temp_dir: /tmp/snapcenter_plugin

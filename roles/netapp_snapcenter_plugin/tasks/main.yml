@@ -1,4 +1,11 @@
 ---
+
+- name: Prerequisite - Check if oracle user exists
+  ansible.builtin.getent:
+    database: passwd
+    key: oracle
+  register: oracle_user
+  
 - name: Check if Netapp Snapcenter plugin is installed
   ansible.builtin.stat:
     path: "{{ snapcenter_path }}"
@@ -6,4 +13,4 @@
 
 - name: Install Netapp Snapcenter
   ansible.builtin.include_tasks: snapcenter.yml
-  when: not snapcenter.stat.exists
+  when: not snapcenter_plugin.stat.exists and oracle_user.exists

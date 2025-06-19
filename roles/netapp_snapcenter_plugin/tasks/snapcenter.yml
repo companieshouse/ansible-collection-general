@@ -1,17 +1,20 @@
 ---
-
-- name: Create temporary directory
-  ansible.builtin.tempfile:
-    path: "{{ snapcenter_temp_dir }}"
+  
+- name: Create /opt/Netapp/ directory
+  ansible.builtin.file:
+    path: "{{ netapp_dir }}"
     state: directory
-  register: snapcenter_temp_dir_result
+    owner: root
+    group: root
+    mode: 0755
+    register: netapp_dir_result
   
 - name: Download netapp snapcenter plugin from S3
-  ansible.builtin.command: aws s3 cp "{{ snapcenter_s3_loc }}" "{{ snapcenter_temp_dir_result.path }}" 
+  ansible.builtin.command: aws s3 cp "{{ snapcenter_s3_loc }}" "{{ netapp_dir_result.path }}" 
 
 - name: Make install file executeable
   ansible.builtin.file:
-    path: "{{ snapcenter_temp_dir_result.path }}"
+    path: "{{ netapp_dir_result.path }}"
     state: file
     recurse: yes
     owner: root
@@ -19,27 +22,28 @@
     mode: "0755"
   
 - name: Install Netapp Snapcenter plugin
-  ansible.bultin.shell: ./snapcenter_linux_host_plugin.bin -i silent-DPORT=8145-DSERVER_IP=SnapCenter_Server_FQDN-DSERVER_HTTPS_PORT=SnapCenter_Server_Port-DUSER_INSTALL_DIR==/opt/custom_path
+  ansible.bultin.shell: ./snapcenter_linux_host_plugin.bin -i silent -DPORT=8145 -DSERVER_IP=snapcenter1-aws.companieshouse.local -DSERVER_HTTPS_PORT=8146
   args:
-    chdir: "{{ snapcenter_temp_dir_result.path }}"
+    chdir: "{{ netapp_dir_result.path }}"
   when: not snapcenter_plugin.stat.exists
   register: snapcenter_plugin_install_cmd
   changed_when: snapcenter_plugin_cmd.rc = 0
+  
+- name: Copy output to log file
+  ansible.builtin.copy:
+    content: "{{ snapcenter_plugin_install_cmd.stdout }}"
+    dest: "{{ snapcenter_install_log }}"
+  delegate_to: localhost
+  
+- name: Add snapcenter install dir to PATH
+#SORT THIS OUT TOMORROW
 
-add expect stuff above here
-
-
-- name: Enable Netapp Snapcenter service
+- name: Check if Netapp Snapcenter service is enabled
   ansible.builtin.service:
     name: spl
     enabled: yes
 
-- name: Check Snapcenter installation
+- name: Check Snapcenter service is active
   ansible.builtin.shell: systemctl is-active spl.service
   register: spl_service_status
   
-
-- name: Remove temporary directory
-  ansible.builtin.file:
-    path: "{{ snapcenter_temp_dir_result.path }}"
-    state: absent

@@ -1,5 +1,5 @@
 ---
-  
+
 - name: Create /opt/Netapp/ directory
   ansible.builtin.file:
     path: "{{ netapp_dir }}"
@@ -8,15 +8,15 @@
     group: root
     mode: 0755
     register: netapp_dir_result
-  
+
 - name: Download netapp snapcenter plugin from S3
-  ansible.builtin.command: aws s3 cp "{{ snapcenter_s3_loc }}" "{{ netapp_dir_result.path }}" 
+  ansible.builtin.command: aws s3 cp "{{ snapcenter_s3_loc }}" "{{ netapp_dir_result.path }}"
 
 - name: Make install file executeable
   ansible.builtin.file:
     path: "{{ netapp_dir_result.path }}"
     state: file
-    recurse: yes
+    recurse: true
     owner: root
     group: root
     mode: "755"
@@ -25,7 +25,7 @@
   block:
     - name: Set vault path for lookup
       ansible.builtin.set_fact:
-        fqdn_lookup_vault_path : "{{ vault_base_path }}/fqdn"
+        fqdn_lookup_vault_path: "{{ vault_base_path }}/fqdn"
 
     - name: Retrieve Snapcenter FQDN from Hashicorp vault
       ansible.builtin.set_fact:
@@ -43,19 +43,22 @@
   ansible.builtin.copy:
     content: "{{ snapcenter_plugin_install_cmd.stdout }}"
     dest: "{{ snapcenter_install_log }}"
+    owner: root
+    group: root
+    mode: "644"
   delegate_to: localhost
 
 - name: Add snapcenter install dir to PATH
   ansible.builtin.copy:
     dest: /etc/profile.d/snapcenter_path.sh
     content: 'PATH=$PATH:(( snapcenter_path }}'
+    owner: root
+    group: root
+    mode: "644"
 
 
-- name: Check if Netapp Snapcenter service is enabled
+- name: Check if Netapp Snapcenter service is enabled and active
   ansible.builtin.service:
     name: spl
-    enabled: yes
-
-- name: Check Snapcenter service is active
-  ansible.builtin.shell: systemctl is-active spl.service
-  register: spl_service_status
+    enabled: true
+    state: started

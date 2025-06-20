@@ -5,7 +5,7 @@
     database: passwd
     key: oracle
   register: oracle_user
-  
+
 - name: Check if Netapp Snapcenter plugin is installed
   ansible.builtin.stat:
     path: "{{ snapcenter_path }}"

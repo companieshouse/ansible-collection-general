@@ -1,5 +1,6 @@
 ---
 netapp_snapcenter_plugin_vault_path: /applications/shared-services-eu-west-2/netapp/snapcenter/
+netapp_snapcenter_plugin_user: oracle
 
 netapp_snapcenter_plugin_snapcenter_path: /opt/NetApp/snapcenter/spl/bin/spl
 netapp_snapcenter_plugin_netapp_dir: /opt/NetApp/

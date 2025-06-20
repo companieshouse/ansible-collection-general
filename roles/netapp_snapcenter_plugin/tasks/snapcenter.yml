@@ -21,8 +21,18 @@
     group: root
     mode: "0755"
   
+- name: Get Snapcenter FQDN from Vault
+  block:
+    - name: Set vault path for lookup
+      ansible.builtin.set_fact:
+        fqdn_lookup_vault_path : "{{ vault_base_path }}/fqdn"
+    
+    - name: Retrieve Snapcenter FQDN from Hashicorp vault
+      ansible.builtin.set_fact:
+        snapcenter_fqdn: "{{ lookup('community.hashi_vault.hashi_vault', fqdn_lookup_vault_path) }}"
+      
 - name: Install Netapp Snapcenter plugin
-  ansible.bultin.shell: ./snapcenter_linux_host_plugin.bin -i silent -DPORT=8145 -DSERVER_IP=snapcenter1-aws.companieshouse.local -DSERVER_HTTPS_PORT=8146
+  ansible.bultin.shell: ./snapcenter_linux_host_plugin.bin -i silent -DPORT=8145 -DSERVER_IP='{{ snapcenter_fqdn }}' -DSERVER_HTTPS_PORT=8146
   args:
     chdir: "{{ netapp_dir_result.path }}"
   when: not snapcenter_plugin.stat.exists
@@ -36,7 +46,10 @@
   delegate_to: localhost
   
 - name: Add snapcenter install dir to PATH
-#SORT THIS OUT TOMORROW
+  ansible.builtin.copy:
+    dest: /etc/profile.d/snapcenter_path.sh
+    content: 'PATH=$PATH:(( snapcenter_path }}'
+    
 
 - name: Check if Netapp Snapcenter service is enabled
   ansible.builtin.service:

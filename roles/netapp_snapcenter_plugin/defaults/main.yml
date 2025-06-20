@@ -1,3 +1,5 @@
 ---
+vault_path:      /applications/shared-services-eu-west-2/netapp/snapcenter/
+
 snapcenter_path: /opt/NetApp/snapcenter/spl/bin/spl
 netapp_dir:      /opt/NetApp/

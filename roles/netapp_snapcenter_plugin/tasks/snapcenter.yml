@@ -6,7 +6,7 @@
     state: directory
     owner: root
     group: root
-    mode: 0755
+    mode: "0755"
     register: netapp_dir_result
 
 - name: Download netapp snapcenter plugin from S3
@@ -45,7 +45,7 @@
     dest: "{{ snapcenter_install_log }}"
     owner: root
     group: root
-    mode: "644"
+    mode: "0644"
   delegate_to: localhost
 
 - name: Add snapcenter install dir to PATH
@@ -54,7 +54,7 @@
     content: 'PATH=$PATH:(( netapp_snapcenter_plugin_snapcenter_path }}'
     owner: root
     group: root
-    mode: "644"
+    mode: "0644"
 
 - name: Check if Netapp Snapcenter service is enabled and active
   ansible.builtin.service:

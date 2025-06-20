@@ -2,7 +2,7 @@
 
 - name: Create /opt/Netapp/ directory
   ansible.builtin.file:
-    path: "{{ netapp_dir }}"
+    path: "{{ netapp_snapcenter_plugin_netapp_dir }}"
     state: directory
     owner: root
     group: root
@@ -10,11 +10,11 @@
     register: netapp_dir_result
 
 - name: Download netapp snapcenter plugin from S3
-  ansible.builtin.command: aws s3 cp "{{ snapcenter_s3_loc }}" "{{ netapp_dir_result.path }}"
+  ansible.builtin.command: aws s3 cp "{{ netapp_snapcenter_plugin_snapcenter_s3_loc }}" "{{ netapp_snapcenter_plugin_netapp_dir_result.path }}"
 
 - name: Make install file executeable
   ansible.builtin.file:
-    path: "{{ netapp_dir_result.path }}"
+    path: "{{ netapp_snapcenter_plugin_netapp_dir_result.path }}"
     state: file
     recurse: true
     owner: root
@@ -25,7 +25,7 @@
   block:
     - name: Set vault path for lookup
       ansible.builtin.set_fact:
-        fqdn_lookup_vault_path: "{{ vault_base_path }}/fqdn"
+        fqdn_lookup_vault_path: "{{ netapp_snapcenter_plugin_vault_base_path }}/fqdn"
 
     - name: Retrieve Snapcenter FQDN from Hashicorp vault
       ansible.builtin.set_fact:
@@ -34,7 +34,7 @@
 - name: Install Netapp Snapcenter plugin
   ansible.bultin.shell: ./snapcenter_linux_host_plugin.bin -i silent -DPORT=8145 -DSERVER_IP='{{ snapcenter_fqdn }}' -DSERVER_HTTPS_PORT=8146
   args:
-    chdir: "{{ netapp_dir_result.path }}"
+    chdir: "{{ netapp_snapcenter_plugin_netapp_dir_result.path }}"
   when: not snapcenter_plugin.stat.exists
   register: snapcenter_plugin_install_cmd
   changed_when: snapcenter_plugin_cmd.rc = 0
@@ -51,7 +51,7 @@
 - name: Add snapcenter install dir to PATH
   ansible.builtin.copy:
     dest: /etc/profile.d/snapcenter_path.sh
-    content: 'PATH=$PATH:(( snapcenter_path }}'
+    content: 'PATH=$PATH:(( netapp_snapcenter_plugin_snapcenter_path }}'
     owner: root
     group: root
     mode: "644"

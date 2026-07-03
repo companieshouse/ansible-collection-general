@@ -10,6 +10,7 @@
 - name: Retrieve SSH private key from Hashicorp Vault
   ansible.builtin.set_fact:
     ssh_key_json: "{{ lookup('community.hashi_vault.hashi_vault', ssh_key_vault_path) }}"
+  no_log: true
 
 - name: Ensure SSH directory exists
   ansible.builtin.file:
@@ -27,3 +28,4 @@
     owner: "{{ ssh_key_owner }}"
     group: "{{ ssh_key_group }}"
     mode: '{{ ssh_key_mode }}'
+  no_log: true
